@@ -11,7 +11,7 @@ const app     = express();
 const PORT    = 3000;
 const fs      = require('fs').promises;
 const chalk   = require('chalk');
-const exec    = require('util').promisify(require('child_process').exec);
+const exec    = require('child_process').exec;
 const { v4: uuidv4 } = require('uuid');
 
 // change if you need to pass in larger images.
@@ -120,7 +120,8 @@ const runOsaScript = async (params, filename, scriptName) => {
   const id          = `${argIfExists(params.id)}`;
   const label       = `${argIfExists(params.label)}`;
 
-  const {stdout, error} = await exec(`osascript ${script_path}${label_path}${img_path}${id}${label}`);
-  stdout && logger(`STDOut: ${stdout.replace(`\n`, '')}`, chalk.cyan);
-  error  && logger(`STDErr: ${stderr}`, chalk.red);
+  exec(`osascript ${script_path}${label_path}${img_path}${id}${label}`, (error,stdout,stderr) => {
+    stdout && logger(`STDOut: ${stdout.replace(`\n`, '')}`, chalk.cyan);
+    error  && logger(`STDErr: ${stderr}`, chalk.red);
+  });
 }
